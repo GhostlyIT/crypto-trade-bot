@@ -18,10 +18,11 @@ class BTCAlphaClient:
         }
 
     def __make_request(self, endpoint: str, method: str = 'get', data: dict = {}, params: dict = {}):
-        return requests.request(method,
-                                settings['exchange_api']['base_url'] + '/' + endpoint,
-                                headers=self.__generate_headers(data),
-                                params=params)
+        return requests.request(method=method,
+                                url=settings['exchange_api']['base_url'] + '/' + endpoint,
+                                headers=self.__generate_headers(data=data),
+                                params=params,
+                                data=data)
 
     def get_currencies(self):
         return self.__make_request('currencies')
@@ -48,7 +49,8 @@ class BTCAlphaClient:
             'amount': str(amount),
             'price': str(price)
         }
-        return self.__make_request(method='POST', endpoint='order', data=order)
+
+        return self.__make_request(endpoint='order/', method='post', data=order)
 
     def cancel_order(self, order_id: int):
         return self.__make_request(method='POST', endpoint='order-cancel', data={'order': order_id})
@@ -75,4 +77,4 @@ class BTCAlphaClient:
             'until': until
         }
 
-        return self.__make_request(endpoint='charts/' + pair + '/' + timeline + '/chart', params=params)
+        return requests.get('https://btc-alpha.com/api/charts/' + pair + '/' + timeline + '/chart', params=params)
